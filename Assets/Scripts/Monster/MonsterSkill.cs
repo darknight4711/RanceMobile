@@ -20,9 +20,9 @@ public abstract class MonsterSkill {
         }
     }
 
-    public abstract void startAttack(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index);
+    public abstract void startAttack(List<Chara> charaList, List<Monster> monsterList, int index);
 
-    public abstract bool IsAttackFinish(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index);
+    public abstract bool IsAttackFinish(List<Chara> charaList, List<Monster> monsterList, int index);
 
     public void ParseSkill(string[] text) {
         name = text[0];

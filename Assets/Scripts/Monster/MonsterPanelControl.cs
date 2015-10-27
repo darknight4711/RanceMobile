@@ -5,36 +5,24 @@ using System.Collections.Generic;
 public class MonsterPanelControl : MonoBehaviour {
 	private Monster monster;
 
-	public Image icon;
-	public HPControl HPLine;
-	public Image AttackedImage;
-	public Animator animator;
-    public MoveForwardAnimation moveForwardAnimation;
-    public DeadAnimation deadAnimation;
     [SerializeField]
-    private int place;
+	private Image icon;
+    [SerializeField]
+    private HPControl HPLine;
+    [SerializeField]
+    private Image attackedImage;
+    [SerializeField]
+    private Animator animator;
+    [SerializeField]
+    private MoveForwardAnimation moveForwardAnimation;
+    [SerializeField]
+    private DeadAnimation deadAnimation;
 
     private bool inPlayAttackedAnimation;
-	private bool inPlayDeadAnimation;
-
-	public Monster Monster {
-		get {
-			return monster;
-		}
-	}
-
-    public int Place {
-        get {
-            return place;
-        }
-    }
-
-    public void setPlace(int place) {
-        this.place = place;
-    }
 
     public void setMonster(Monster value, bool playShowUp=false) {
         monster = value;
+        monster.View = this;
         setIcon();
         updateHP();
         playShowUpAnimation();
@@ -47,73 +35,92 @@ public class MonsterPanelControl : MonoBehaviour {
         } else {
             Sprite sprite = Resources.Load<Sprite>(monster.Info.Name);
             icon.sprite = sprite;
-            icon.transform.localPosition = new Vector2(120, 180);
             LightIcon();
         }
 	}
 
-	public bool IsShowUpFinish () {
-        if (monster == null)
-            return true;
-		if (animator.GetCurrentAnimatorStateInfo(0).IsName("MonsterShow")) {
-            HPLine.setVisible(true);
-            return true;
-		} else {
-			return false;
-		}
-	}
-
-	public void playShowUpAnimation () {
-        HPLine.setVisible(false);
-        animator.SetTrigger("monsterShowUp");
+    public void updateHP() {
+        HPLine.MaxHP = monster.HP;
+        HPLine.CurrentHP = monster.CurrentHP;
     }
 
-	public bool IsPlayAttackedFinish () {
-		if (animator.GetCurrentAnimatorStateInfo(0).IsName("MonsterSlash")) {
-			inPlayAttackedAnimation = true;
-		} else if (inPlayAttackedAnimation){
-			inPlayAttackedAnimation = false;
-			return true;
-		}
-		return false;
-	}
+    /*player function*/
 
-	public void playAttackedAnimation () {
-		animator.SetTrigger("playAttacked");
-	}
+    public bool isShowUpFinish() {
+        if (monster == null)
+            return true;
+        if (Animator.GetCurrentAnimatorStateInfo(0).IsName("MonsterShow")) {
+            HPLine.setVisible(true);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-    public void playMoveForwardAnimation(int targetIndex) {
-        moveForwardAnimation.playMoveForwardAnimation(place, targetIndex);
-        place = targetIndex;
+    public void playShowUpAnimation() {
+        icon.transform.localPosition = new Vector2(120, 180);
+        HPLine.setVisible(false);
+        Animator.SetTrigger("monsterShowUp");
+    }
+
+    public bool isPlayAttackedFinish() {
+        if (Animator.GetCurrentAnimatorStateInfo(0).IsName("MonsterSlash")) {
+            inPlayAttackedAnimation = true;
+        } else if (inPlayAttackedAnimation) {
+            inPlayAttackedAnimation = false;
+            return true;
+        }
+        return false;
+    }
+
+    public void playAttackedAnimation() {
+        Animator.SetTrigger("playAttacked");
     }
 
     public bool isMoveForwardAnimationFinish() {
         return moveForwardAnimation.isPlayAnimationFinish();
     }
 
-    public void updateHP () {
-        HPLine.MaxHP = monster.HP;
-        HPLine.CurrentHP = monster.CurrentHP;
-	}
+    public void playMoveForwardAnimation(int targetIndex) {
+        moveForwardAnimation.playMoveForwardAnimation(Monster.CurrentPlace, targetIndex);
+        Monster.CurrentPlace = targetIndex;
+    }
 
-	public bool IsPlayDeadFinish () {
+    public bool isPlayDeadFinish() {
         if (!monster.Dead)
             return true;
-		
-		return deadAnimation.isPlayAnimationFinish();
-	}
-
-	public bool checkDead () {
-		if (monster.checkDead()) {
-            playDeadAnimation();
-            return true;
-        }
-        return false;
-	}
+        return deadAnimation.isPlayAnimationFinish();
+    }
 
     public void playDeadAnimation() {
         deadAnimation.playDeadAnimation(icon);
     }
+
+    /*variable properrty*/
+
+    public Monster Monster {
+		get {
+			return monster;
+		}
+	}
+
+    public Animator Animator {
+        get {
+            return animator;
+        }
+    }
+
+    public Image AttackedImage {
+        get {
+            return attackedImage;
+        }
+
+        set {
+            attackedImage = value;
+        }
+    }
+
+    /*light-deslight function*/
 
     public void LightIcon() {
         icon.color = Color.white;
@@ -123,17 +130,5 @@ public class MonsterPanelControl : MonoBehaviour {
         icon.color = Color.grey;
     }
 
-    //public bool hasMonster() {
-    //    return (monster == null);
-    //}
-
-    public void attackHP(int damage, bool guard=true) {
-        if (guard) {
-            HPLine.CurrentHP -= damage - monster.DEF;
-        } else {
-            HPLine.CurrentHP -= damage;
-        }
-        monster.CurrentHP = HPLine.CurrentHP;
-        HPLine.updateHPLine();
-    }
+    
 }

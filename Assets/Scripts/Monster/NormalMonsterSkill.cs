@@ -6,28 +6,32 @@ public class NormalMonsterSkill : MonsterSkill {
 
     public NormalMonsterSkill(string[] text) : base(text) { }
 
-    public override bool IsAttackFinish(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index) {
-        if (index != 0)
+    public override bool IsAttackFinish(List<Chara> charaList, List<Monster> monsterList, int index) {
+        int firstAlive = 0;
+        while (monsterList[firstAlive].Dead) { firstAlive++; }
+        if (index != firstAlive)
             return true;
-        if (monsterList[index].animator.GetCurrentAnimatorStateInfo(0).IsName("MonsterAttack")) {
+        if (monsterList[index].View.Animator.GetCurrentAnimatorStateInfo(0).IsName("MonsterAttack")) {
             inPlayAttackAnimation = true;
         } else if (inPlayAttackAnimation) {
             inPlayAttackAnimation = false;
-            charaList[target].attackHP(monsterList[index].Monster.Info.ATK * Rate/100);
-            charaList[target].DelightIcon();
+            charaList[target].attackHP(monsterList[index].Info.ATK * Rate/100);
+            charaList[target].View.DelightIcon();
             return true;
         }
         return false;
     }
 
-    public override void startAttack(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index) {
-        if (index != 0)
+    public override void startAttack(List<Chara> charaList, List<Monster> monsterList, int index) {
+        int firstAlive = 0;
+        while (monsterList[firstAlive].Dead) { firstAlive++; }
+        if (index != firstAlive)
             return;
         UnityEngine.Random.seed = System.Guid.NewGuid().GetHashCode();
         do {
             target = UnityEngine.Random.Range(0, charaList.Count);
         } while (charaList[target].Dead);
-        charaList[target].LightIcon();
-        monsterList[index].animator.SetTrigger("monsterAttack");
+        charaList[target].View.LightIcon();
+        monsterList[index].View.Animator.SetTrigger("monsterAttack");
     }
 }

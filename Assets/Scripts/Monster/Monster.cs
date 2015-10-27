@@ -9,21 +9,48 @@ public class Monster {
 
     private bool dead;
 
+    private MonsterPanelControl view;
     private MonsterInfo info;
 
     private MonsterSkill currentUsedSkill;
 
-    public string Name {
-        get {
-            return name;
+    public void attackHP(int damage, bool guard = true) {
+        if (guard) {
+            CurrentHP -= damage - DEF;
+        } else {
+            CurrentHP -= damage;
         }
+
+        View.updateHP();
+    }
+
+    public bool checkDead() {
+        if (currentHP == 0) {
+            dead = true;
+            View.playDeadAnimation();
+        }
+        return dead;
+    }
+
+    private int useStrategy() {
+        return info.Strategy.strategy(info.getSkills());
+    }
+
+    public void startAttack(List<Chara> charaList, List<Monster> monsterList, int index) {
+        int strategySkill = useStrategy();
+        currentUsedSkill = info.getSkill(strategySkill);
+        currentUsedSkill.startAttack(charaList, monsterList, index);
+    }
+
+    public bool IsAttackFinish(List<Chara> charaList, List<Monster> monsterList, int index) {
+        return currentUsedSkill.IsAttackFinish(charaList, monsterList, index);
     }
 
     public Monster(string txtName) {
         name = txtName;
 
-        Info = new MonsterInfo(txtName);
-        CurrentHP = HP;
+        info = new MonsterInfo(txtName);
+        currentHP = HP;
     }
 
     public int HP {
@@ -44,13 +71,24 @@ public class Monster {
         }
     }
 
+    /*variable property*/
+
+    public string Name {
+        get {
+            return name;
+        }
+    }
+
     public int CurrentHP {
         get {
             return currentHP;
         }
-
         set {
             currentHP = value;
+            if (currentHP < 0)
+                currentHP = 0;
+            else if (currentHP > HP)
+                currentHP = HP;
         }
     }
 
@@ -64,40 +102,29 @@ public class Monster {
         }
     }
 
-    public MonsterInfo Info {
-        get {
-            return info;
-        }
-
-        set {
-            info = value;
-        }
-    }
-
     public bool Dead {
         get {
             return dead;
         }
     }
 
-    public bool checkDead() {
-        if (currentHP == 0) {
-            dead = true;
+    public MonsterPanelControl View {
+        get {
+            return view;
         }
-        return dead;
+
+        set {
+            view = value;
+        }
     }
 
-    public int useStrategy() {
-        return info.Strategy.strategy(info.getSkills());
+    public MonsterInfo Info {
+        get {
+            return info;
+        }
     }
 
-    public void startAttack(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index) {
-        int strategySkill = useStrategy();
-        currentUsedSkill = info.getSkill(strategySkill);
-        currentUsedSkill.startAttack(charaList, monsterList, index);
-    }
+    
 
-    public bool IsAttackFinish(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index) {
-        return currentUsedSkill.IsAttackFinish(charaList, monsterList, index);
-    }
+    
 }

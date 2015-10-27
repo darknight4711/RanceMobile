@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-class CharaDataParser {
+public class CharaDataParser {
     public static List<Chara> ParseCharaData(string txtName) {
         TextAsset txt = Resources.Load("Stage/" + txtName) as TextAsset;
         string dialogText;
@@ -21,7 +20,7 @@ class CharaDataParser {
             Chara chara = new Chara(name, currentLevel);
 
             for (int i = 0; i < 4 && lines[txtCounter].Trim() != ""; i++) {
-                chara.setSkill(chara.info.getSkill(lines[txtCounter].Trim()), i);
+                chara.setSkill(chara.Info.getSkill(lines[txtCounter].Trim()), i);
                 txtCounter++;
             }
 

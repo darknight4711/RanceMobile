@@ -1,55 +1,101 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Assertions;
 
 public class CharaPanelControl : MonoBehaviour, IPointerClickHandler {
-	public Image icon;
-	public Button skillButton;
-	public Text order;
-	public Text cd;
-    public HPControl hp;
-    private OrderManager<CharaPanelControl> orderManager;
     [SerializeField]
-    private bool ordered = false;
-    private bool dead = false;
+	private Image icon;
+    [SerializeField]
+    private Button skillButton;
+    [SerializeField]
+    private Text order;
+    [SerializeField]
+    private Text cd;
+    [SerializeField]
+    private HPControl hp;
+
     private int place;
     private bool interactive = false;
 
     private Chara responseChara;
-	public RectTransform[] panels = new RectTransform[5];
+    private OrderManager<Chara> orderManager;
 
+    public void initiate(RectTransform[] rt, int i, OrderManager<Chara> manager, Chara c) {
+        place = i;
+        RectTransform panelTransform = transform as RectTransform;
+        panelTransform.position = rt[Place].position;
+        OrderManager = manager;
+        ResponseChara = c;
+        c.View = this;
 
-    public Chara ResponseChara {
-		get {
-			return responseChara;
-		}
-		set {
-			responseChara = value;
-            SetHP(value.CurrentHP, value.HP);
-			updateIcon ();
-			updateSkill();
-            updatePosition();
+        skillButton.onClick.AddListener(skillBuuttonAction);
+    }
+
+    private void skillBuuttonAction() {
+        Canvas skillCanvas = GameObject.Find(StageViewControl.SkillCanvasName).GetComponent<Canvas>();
+        Canvas mainCanvas = GameObject.Find(StageViewControl.MainCanvasName).GetComponent<Canvas>();
+        Assert.IsNotNull(skillCanvas, "Can't not find SkillCanvas!");
+        Assert.IsNotNull(mainCanvas, "Can't not find MainCanvas!");
+        skillCanvas.GetComponent<SkillCanvasController>().setChara(this);
+        skillCanvas.enabled = true;
+        mainCanvas.enabled = false;
+    }
+
+    private void updateIcon () {
+        Sprite sprite = Resources.Load<Sprite>(responseChara.Name + "_icon");
+        icon.sprite = sprite;
+        LightIcon();
+    }
+
+    public void updateSkill () {
+		skillButton.GetComponentInChildren<Text> ().text = responseChara.getSkill(responseChara.CurrentSkill).Name;
+		cd.text = responseChara.getSkillCD (responseChara.CurrentSkill).ToString();
+        if (responseChara.getSkillCD(responseChara.CurrentSkill) != 0) {
+            DelightIcon();
         }
 	}
+
+    public void updateOrder() {
+        if (responseChara.Order == 0) {
+            order.enabled = false;
+        } else {
+            order.enabled = true;
+            order.text = responseChara.Order.ToString();
+        }
+        updateSkill();
+    }
+
+    public void updateHP() {
+        hp.CurrentHP = responseChara.CurrentHP;
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
+        if (interactive == false || responseChara.getSkillCD(responseChara.CurrentSkill) != 0)
+            return;
+        if (ResponseChara.Order != 0) {
+            OrderManager.removeOrder(responseChara);
+            ResponseChara.Order = 0;
+        } else {
+            OrderManager.addOrder(responseChara);
+            int order = OrderManager.getOrder(responseChara);
+            ResponseChara.Order = order + 1;
+        }
+    }
+
+    public void LightIcon() {
+        icon.color = Color.white;
+    }
+
+    public void DelightIcon() {
+        icon.color = Color.gray;
+    }
+
+    /*some variable property*/
 
     public int Place {
         get {
             return place;
-        }
-
-        set {
-            place = value;
-            updatePosition();
-        }
-    }
-
-    public OrderManager<CharaPanelControl> OrderManager {
-        get {
-            return orderManager;
-        }
-
-        set {
-            orderManager = value;
         }
     }
 
@@ -63,91 +109,20 @@ public class CharaPanelControl : MonoBehaviour, IPointerClickHandler {
                 skillButton.interactable = true;
             } else {
                 skillButton.interactable = false;
-                //setOrder(0);
             }
         }
     }
 
-    public bool Dead {
+    public Chara ResponseChara {
         get {
-            return dead;
+            return responseChara;
         }
-    }
-
-    private void updateIcon () {
-        Sprite sprite = Resources.Load<Sprite>(responseChara.Name + "_icon");
-        icon.sprite = sprite;
-        LightIcon();
-    }
-
-    private void updatePosition() {
-        RectTransform panelTransform = transform as RectTransform;
-        panelTransform.position = panels[Place].position;
-    }
-
-    public void updateSkill () {
-		skillButton.GetComponentInChildren<Text> ().text = responseChara.getSkill(responseChara.currentSkill).Name;
-		cd.text = responseChara.skillCD [responseChara.currentSkill].ToString();
-        if (responseChara.skillCD[responseChara.currentSkill] != 0) {
-            DelightIcon();
+        set {
+            responseChara = value;
+            SetHP(value.CurrentHP, value.HP);
+            updateIcon();
+            updateSkill();
         }
-	}
-
-	public void setOrder (int value) {
-		if (value == 0) {
-			responseChara.state = false;
-			order.enabled = false;
-            ordered = false;
-		} else {
-			responseChara.state = true;
-			order.enabled = true;
-			order.text = value.ToString ();
-            ordered = true;
-        }
-		updateSkill ();
-	}
-
-	public void turnPre() {
-		for (int i=0; i<4; i++) {
-			responseChara.skillCD [i] = responseChara.skillCD [i] - 1 < 0 ? 0 : responseChara.skillCD [i] - 1;
-		}
-        LightIcon();
-        updateSkill ();
-	}
-	
-	public void turnPost() {
-        DelightIcon();
-        updateSkill ();
-	}
-
-	public void startInteraction() {
-        setOrder(0);
-        Interactive = true;
-	}
-
-	public void startBattle() {
-        Interactive = false;
-	}
-
-    public void OnPointerClick(PointerEventData eventData) {
-        if (interactive == false || responseChara.skillCD[responseChara.currentSkill] != 0)
-            return;
-        if (ordered) {
-            OrderManager.removeOrder(this);
-            setOrder(0);
-        } else {
-            OrderManager.addOrder(this);
-            int order = OrderManager.getOrder(this);
-            setOrder(order + 1);
-        }
-    }
-
-    public void LightIcon() {
-        icon.color = Color.white;
-    }
-
-    public void DelightIcon() {
-        icon.color = Color.gray;
     }
 
     private void SetHP(int currentHP, int maxHP) {
@@ -155,33 +130,17 @@ public class CharaPanelControl : MonoBehaviour, IPointerClickHandler {
             currentHP = maxHP;
         hp.MaxHP = maxHP;
         hp.CurrentHP = currentHP;
-        hp.updateHPLine();
     }
 
-    public void attackHP(int damage, bool guard = true) {
-        if (guard)
-            hp.CurrentHP -= damage - responseChara.DEF;
-        else
-            hp.CurrentHP -= damage;
-        responseChara.CurrentHP = hp.CurrentHP;
-        hp.updateHPLine();
-    }
+    public OrderManager<Chara> OrderManager {
+        get {
+            return orderManager;
+        }
 
-    public void setSkill(int index) {
-        responseChara.currentSkill = index;
-        updateSkill();
-        if (responseChara.skillCD[responseChara.currentSkill] == 0) {
-            LightIcon();
+        set {
+            orderManager = value;
         }
     }
 
-    public bool checkDead() {
-        if (ResponseChara.CurrentHP == 0) {
-            print(ResponseChara.Name + " Dead");
-            dead = true;
-            setOrder(0);
-            DelightIcon();
-        }
-        return dead;
-    }
+    
 }

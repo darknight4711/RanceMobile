@@ -38,9 +38,9 @@ public abstract class Skill : Parser {
 		}
 	}
 
-    public abstract void playSkill(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index);
+    public abstract void playSkill(List<Chara> charaList, List<Monster> monsterList, int index);
 
-    public abstract bool checkPlaySkillFinish(List<CharaPanelControl> charaList, List<MonsterPanelControl> monsterList, int index);
+    public abstract bool checkPlaySkillFinish(List<Chara> charaList, List<Monster> monsterList, int index);
 		
 	public void ParseTXT (string txtName) {
         TextAsset txt = Resources.Load("txt/Skill/"+txtName) as TextAsset;

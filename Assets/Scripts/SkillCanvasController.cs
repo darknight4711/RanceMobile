@@ -24,7 +24,7 @@ public class SkillCanvasController : MonoBehaviour {
         for (int i = 0; i < 4; i++) {
             Skill s = chara.getSkill(i);
             if (s != null) {
-                skillButtons[i].GetComponentInChildren<Text>().text = chara.getSkill(i).Name + " (" + chara.skillCD[i] + "/" + chara.getSkill(i).Cd + ")";
+                skillButtons[i].GetComponentInChildren<Text>().text = chara.getSkill(i).Name + " (" + chara.getSkillCD(i) + "/" + chara.getSkill(i).Cd + ")";
                 skillDescription[i].text = s.Description;
             } else {
                 skillButtons[i].GetComponentInChildren<Text>().text = "";
@@ -35,7 +35,7 @@ public class SkillCanvasController : MonoBehaviour {
     }
 
     public void setSkill(int index) {
-        currentCPC.setSkill(index);
+        currentCPC.ResponseChara.setSkill(index);
         skillCanvas.enabled = false;
         battleCanvas.enabled = true;
     }

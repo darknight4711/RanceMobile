@@ -1,19 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
-class ShowText : StageState {
+public class ShowText : StageState {
     float startShowStageNumTime;
 
-    public void StateStart(StageStateManager manager) {
-        manager.StageNum.transform.SetAsLastSibling();
-        manager.StageNum.text = (manager.StageCount + 1) + "/" + manager.Info.StageNum;
-        manager.StageNum.enabled = true;
+    public void StateStart(StageStateManager manager, StageViewControl view) {
+        view.showOrHideStageNumText(true, (manager.StageCount + 1) + "/" + manager.Info.StageNum);
         startShowStageNumTime = Time.time;
     }
 
-    public void update(StageStateManager manager) {
+    public void update(StageStateManager manager, StageViewControl view) {
         if (Time.time - startShowStageNumTime > 2) {
-            manager.StageNum.enabled = false;
+            view.showOrHideStageNumText(false);
             manager.CurrentState = manager.ShowEnemy;
         }
     }

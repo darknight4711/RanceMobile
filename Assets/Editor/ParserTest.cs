@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 public class ParserTest {
     [Test]
@@ -42,19 +43,19 @@ public class ParserTest {
     public void TestSkillParser() {
         SkillFactory sf = new SkillFactory();
 
-        Skill physicSkill = sf.CreateSkill("Chop");
+        Skill physicSkill = sf.CreateSkill("斬");
         Assert.That(physicSkill is PhysicSkill);
-        Assert.That(physicSkill.Name == "Chop");
+        Assert.That(physicSkill.Name == "斬");
         Assert.That(physicSkill.Cd == 1);
         Assert.That(physicSkill.Rate == 80);
-        Assert.That(physicSkill.Description == "Give one enemy 80% ATK physic damage.");
+        Assert.That(physicSkill.Description == "單體80%ATK物理傷害。");
 
-        Skill healSkill = sf.CreateSkill("Heal");
+        Skill healSkill = sf.CreateSkill("治癒術");
         Assert.That(healSkill is HealSkill);
-        Assert.That(healSkill.Name == "Heal");
+        Assert.That(healSkill.Name == "治癒術");
         Assert.That(healSkill.Cd == 2);
         Assert.That(healSkill.Rate == 150);
-        Assert.That(healSkill.Description == "Heal 150% ATK HP for least HP character.");
+        Assert.That(healSkill.Description == "治療血最少角色150%ATK的HP。");
 
         Assert.That(sf.CreateSkill("Foo") is SimpleSkill);
     }
@@ -67,7 +68,7 @@ public class ParserTest {
         Assert.That(ci.MaxHP == 3664);
         Assert.That(ci.MaxATK == 1752);
         Assert.That(ci.MaxDEF == 203);
-        Assert.That(ci.SkillTree.childNode[0].skill.Name == "Chop");
+        Assert.That(ci.SkillTree.childNode[0].skill.Name == "斬");
         Assert.That(ci.SkillTree.childNode[2].childNode[0].skill.Name == "Sex");
     }
 
@@ -94,5 +95,15 @@ public class ParserTest {
         Assert.That(si.MonsterList(0)[0].Name == "IkaMan");
         Assert.That(si.MonsterList(1)[1].Name == "Hony");
         Assert.That(si.MonsterList(2)[2].Name == "Roper");
+    }
+
+    [Test]
+    public void TestCharaDataParser() {
+        List<Chara> charaList = CharaDataParser.ParseCharaData("CharaData");
+
+        Assert.That(charaList[0].Name == "蘭斯");
+        Assert.That(charaList[1].CurrentLevel == 1);
+        Assert.That(charaList[1].getSkill(0).Name == "火球術");
+        Assert.That(charaList[1].getSkill(1).Name == "治癒術");
     }
 }
