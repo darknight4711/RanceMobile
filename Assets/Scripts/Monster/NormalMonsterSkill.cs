@@ -4,6 +4,7 @@ public class NormalMonsterSkill : MonsterSkill {
     private int target;
     private bool inPlayAttackAnimation;
 
+    public NormalMonsterSkill(MonsterSkillInfo info) : base(info) { }
     public NormalMonsterSkill(string[] text) : base(text) { }
 
     public override bool IsAttackFinish(List<Chara> charaList, List<Monster> monsterList, int index) {

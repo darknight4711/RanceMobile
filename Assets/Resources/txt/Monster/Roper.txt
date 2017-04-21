@@ -1,0 +1,10 @@
+Roper
+Normal
+30
+10
+3
+Random
+
+Laser
+Remote
+100

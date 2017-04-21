@@ -304,6 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f01d29528c1e59841b134f819706f6cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storyTXT: Scene1
+  nextScene: Battle
   nametext: {fileID: 793253679}
   sentensetext: {fileID: 1640941357}
   background: {fileID: 1482966314}

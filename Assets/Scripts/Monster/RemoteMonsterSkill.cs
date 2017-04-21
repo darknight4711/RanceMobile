@@ -6,6 +6,7 @@ public class RemoteMonsterSkill : MonsterSkill {
     private int target;
     private bool inPlayAttackAnimation;
 
+    public RemoteMonsterSkill(MonsterSkillInfo info) : base(info) { }
     public RemoteMonsterSkill(string[] text) : base(text) { }
 
     public override bool IsAttackFinish(List<Chara> charaList, List<Monster> monsterList, int index) {
