@@ -13,7 +13,7 @@ public class MagicSkill : Skill {
     public override bool checkPlaySkillFinish(List<Chara> charaList, List<Monster> monsterList, int index) {
 
         if (targetMonster.View.isPlayAttackedFinish()) {
-            if (targetMonster.Info.Race != MonsterInfo.MonsterRace.Hony) {
+            if (targetMonster.Info.Race != MonsterRace.Hony) {
                 targetMonster.attackHP((int)(charaList[index].ATK * base.Rate / 100.0F));
             }
             charaList[index].increaseSkillCD(base.Cd, charaList[index].CurrentSkill);

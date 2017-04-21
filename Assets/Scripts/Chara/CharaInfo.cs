@@ -2,35 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharaInfo : Parser {
-    public class treeNode {
-        public Skill skill;
-        public List<treeNode> childNode;
-
-        public treeNode(Skill s) {
-            skill = s;
-            childNode = new List<treeNode>();
-        }
-    }
-
-    private string name;
+public class CharaInfo : ScriptableObject, Parser {
+    [SerializeField]
+    private string charaName;
+    [SerializeField]
     private int maxHP;
+    [SerializeField]
     private int maxATK;
+    [SerializeField]
     private int maxDEF;
 
     public string Name {
         get {
-            return name;
+            return charaName;
         }
     }
 
-    private treeNode skillTree;
+    [SerializeField]
+    private SkillTreeNode skillTree;
 
     public CharaInfo(string name) {
         ParseTXT(name);
     }
 
-    public treeNode SkillTree {
+    public SkillTreeNode SkillTree {
         get {
             return skillTree;
         }
@@ -58,10 +53,10 @@ public class CharaInfo : Parser {
         return findSkill(name, skillTree);
     }
 
-    private Skill findSkill(string name, treeNode tree) {
+    private Skill findSkill(string name, SkillTreeNode tree) {
         if (tree.childNode == null)
             return null;
-        foreach (treeNode node in tree.childNode) {
+        foreach (SkillTreeNode node in tree.childNode) {
             if (node.skill.Name == name) {
                 return node.skill;
             } else {
@@ -81,7 +76,7 @@ public class CharaInfo : Parser {
 
         dialogText = txt.text;
         lines = dialogText.Split('\n');
-        name = lines[txtCounter].Trim();
+        charaName = lines[txtCounter].Trim();
         txtCounter++;
         maxHP = int.Parse(lines[txtCounter].Trim());
         txtCounter++;
@@ -91,10 +86,10 @@ public class CharaInfo : Parser {
         txtCounter++;
         txtCounter++;
 
-        skillTree = new treeNode(null);
+        skillTree = new SkillTreeNode(null);
         SkillFactory sf = new SkillFactory();
 
-        List<treeNode> currentPath = new List<treeNode>();
+        List<SkillTreeNode> currentPath = new List<SkillTreeNode>();
         currentPath.Add(skillTree);
         while (txtCounter < lines.Length && lines[txtCounter].Trim() != "") {
             int counter = 0;
@@ -104,7 +99,7 @@ public class CharaInfo : Parser {
                 while (counter < currentPath.Count - 1) {
                     currentPath.RemoveAt(currentPath.Count - 1);
                 }
-                treeNode cNode = new treeNode(sf.CreateSkill(lines[txtCounter].Trim().Substring(counter)));
+                SkillTreeNode cNode = new SkillTreeNode(sf.CreateSkill(lines[txtCounter].Trim().Substring(counter)));
                 currentPath[counter].childNode.Add(cNode);
                 currentPath.Add(cNode);
             }

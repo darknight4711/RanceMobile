@@ -13,6 +13,8 @@ public class StageViewControl : MonoBehaviour {
     string stageText;
     [SerializeField]
     string charaData;
+    [SerializeField]
+    string nextScene;
 
     [SerializeField]
     Canvas canvas;
@@ -67,6 +69,12 @@ public class StageViewControl : MonoBehaviour {
 
 
     /*getter*/
+    public string NextScene {
+        get {
+            return nextScene;
+        }
+    }
+
     public BattleViewControl BattleView {
         get {
             return battleViewControl;
@@ -78,4 +86,6 @@ public class StageViewControl : MonoBehaviour {
             return stageNum;
         }
     }
+
+    
 }

@@ -2,27 +2,46 @@
 using System.Collections.Generic;
 using System;
 
-public class Story :  Parser
+[Serializable]
+public struct Sentence {
+    public enum SentenceEffect { None, CharaAppearLeft, CharaAppearRight, Loud, SwayLeft, SwayRight }
+    public SentenceEffect effect;
+    public string effectParam1;
+    public int index;
+    public string speaker;
+    public string sentence;
+}
+
+[Serializable]
+public struct StoryScene {
+    public string background;
+    public List<Sentence> sentences;
+}
+
+public class Story : ScriptableObject, Parser
 {
-    public struct Sentence
-    {
-        public enum SentenceEffect { None, CharaAppearLeft, CharaAppearRight, Loud, SwayLeft, SwayRight }
-        public SentenceEffect effect;
-        public string effectParam1;
-        public int index;
-        public string speaker;
-        public string sentence;
-    }
+    //public struct Sentence
+    //{
+    //    public enum SentenceEffect { None, CharaAppearLeft, CharaAppearRight, Loud, SwayLeft, SwayRight }
+    //    public SentenceEffect effect;
+    //    public string effectParam1;
+    //    public int index;
+    //    public string speaker;
+    //    public string sentence;
+    //}
 
-    public struct StoryScene
-    {
-        public string background;
-        public List<Sentence> sentences;
-    }
+    //public struct StoryScene
+    //{
+    //    public string background;
+    //    public List<Sentence> sentences;
+    //}
 
+    [SerializeField]
     private List<StoryScene> scenes;
-    private Dictionary<string, Sprite> background;
-    private Dictionary<string, Sprite> chara;
+    [SerializeField]
+    private SDictionary<string, Sprite> background;
+    [SerializeField]
+    private SDictionary<string, Sprite> chara;
 
     public Story(string v)
     {
@@ -37,7 +56,7 @@ public class Story :  Parser
         }
     }
 
-    public Dictionary<string, Sprite> Background
+    public SDictionary<string, Sprite> Background
     {
         get
         {
@@ -45,7 +64,7 @@ public class Story :  Parser
         }
     }
 
-    public Dictionary<string, Sprite> Chara
+    public SDictionary<string, Sprite> Chara
     {
         get
         {
@@ -56,8 +75,8 @@ public class Story :  Parser
     public void ParseTXT(string txtName)
     {
         scenes = new List<StoryScene>();
-        background = new Dictionary<string, Sprite>();
-        chara = new Dictionary<string, Sprite>();
+        background = new SDictionary<string, Sprite>();
+        chara = new SDictionary<string, Sprite>();
 
         TextAsset txt;
         string dialogText;
@@ -75,6 +94,7 @@ public class Story :  Parser
             txtCounter++;
         }
         txtCounter++;
+        chara.Add("none", Resources.Load<Sprite>("none"));
         while (lines[txtCounter] != "\r")
         {
             lines[txtCounter] = lines[txtCounter].Trim();

@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-public abstract class MonsterSkill {
-    private string name;
+using UnityEngine;
+
+
+[System.Serializable]
+public abstract class MonsterSkill : ScriptableObject {
+    [SerializeField]
+    private string skillName;
+    [SerializeField]
     private int rate;
 
     public MonsterSkill(string[] text) {
         ParseSkill(text);
     }
 
+    public MonsterSkill(MonsterSkillInfo info) {
+        ParseSkill(info);
+    }
+
     public string Name {
         get {
-            return name;
+            return skillName;
         }
     }
 
@@ -24,8 +34,13 @@ public abstract class MonsterSkill {
 
     public abstract bool IsAttackFinish(List<Chara> charaList, List<Monster> monsterList, int index);
 
+    public void ParseSkill(MonsterSkillInfo info) {
+        skillName = info.skillName;
+        rate = info.intParam1;
+    }
+
     public void ParseSkill(string[] text) {
-        name = text[0];
+        skillName = text[0];
         rate = int.Parse(text[1]);
     }
 }

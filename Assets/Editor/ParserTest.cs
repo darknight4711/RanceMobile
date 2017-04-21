@@ -12,17 +12,17 @@ public class ParserTest {
         Assert.That(testStory.Chara.ContainsKey("希爾"));
 
         Assert.That(testStory.Scenes[0].background == "BGuild2");
-        Assert.That(testStory.Scenes[0].sentences[0].effect == Story.Sentence.SentenceEffect.CharaAppearLeft);
+        Assert.That(testStory.Scenes[0].sentences[0].effect == Sentence.SentenceEffect.CharaAppearLeft);
         Assert.That(testStory.Scenes[0].sentences[0].effectParam1 == "蘭斯");
 
-        Story.Sentence sentence = testStory.Scenes[1].sentences[testStory.Scenes[1].sentences.Count-1];
+        Sentence sentence = testStory.Scenes[1].sentences[testStory.Scenes[1].sentences.Count-1];
         Assert.That(sentence.speaker == "蘭斯");
         Assert.That(sentence.index == 1);
         Assert.That(sentence.sentence == "我們必須趕快通過這裡到達利薩斯首都，途中的怪物都給我滾開!");
 
        
-        foreach (Story.Sentence sen in testStory.Scenes[0].sentences) {
-            if (sen.effect == Story.Sentence.SentenceEffect.None &&
+        foreach (Sentence sen in testStory.Scenes[0].sentences) {
+            if (sen.effect == Sentence.SentenceEffect.None &&
                 sen.speaker == null &&
                 sen.sentence == null) {
                 Assert.That(false);
@@ -30,8 +30,8 @@ public class ParserTest {
         }
 
         bool hasLoud = false;
-        foreach (Story.Sentence sen in testStory.Scenes[0].sentences) {
-            if (sen.effect == Story.Sentence.SentenceEffect.Loud)
+        foreach (Sentence sen in testStory.Scenes[0].sentences) {
+            if (sen.effect == Sentence.SentenceEffect.Loud)
                 hasLoud = true;
         }
         if (!hasLoud) {
@@ -77,7 +77,7 @@ public class ParserTest {
         MonsterInfo mi = new MonsterInfo("Hony");
 
         Assert.That(mi.Name == "Hony");
-        Assert.That(mi.Race == MonsterInfo.MonsterRace.Hony);
+        Assert.That(mi.Race == MonsterRace.Hony);
         Assert.That(mi.HP == 15);
         Assert.That(mi.ATK == 6);
         Assert.That(mi.DEF == 1);

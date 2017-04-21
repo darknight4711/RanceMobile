@@ -199,6 +199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageText: TutorialStage
   charaData: CharaData
+  nextScene: Story2
   canvas: {fileID: 1302164309}
   stageNum: {fileID: 1048725152}
   finalText: {fileID: 309968982}
@@ -209,7 +210,6 @@ MonoBehaviour:
   - {fileID: 312269634}
   - {fileID: 605303207}
   - {fileID: 1307880837}
-  charaPanelList: []
 --- !u!1001 &255579741
 Prefab:
   m_ObjectHideFlags: 0
@@ -1047,10 +1047,6 @@ Prefab:
     - target: {fileID: 152546, guid: 2e25011f1665e144a98f153fe109bcec, type: 2}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464952, guid: 2e25011f1665e144a98f153fe109bcec, type: 2}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2e25011f1665e144a98f153fe109bcec, type: 2}

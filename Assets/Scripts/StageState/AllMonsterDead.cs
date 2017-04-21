@@ -15,7 +15,7 @@ class AllMonsterDead : StageState {
 
     public void update(StageStateManager manager, StageViewControl view) {
         if (Input.touchCount > 0) {
-            Application.LoadLevel("Start");
+            Application.LoadLevel(view.NextScene);
         }
     }
 }
