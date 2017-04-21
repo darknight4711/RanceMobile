@@ -1,0 +1,10 @@
+IkaMan
+Normal
+20
+5
+2
+Random
+
+IkaPunch
+Normal
+100

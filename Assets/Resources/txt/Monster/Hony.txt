@@ -1,0 +1,10 @@
+Hony
+Hony
+15
+6
+1
+Random
+
+HonyCollide
+Normal
+100
